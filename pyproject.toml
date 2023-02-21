@@ -5,6 +5,19 @@ description = "Quantized Mesh encoder extension for titiler"
 authors = ["Andrew Annex <ama6fy@virginia.edu>"]
 license = "MIT"
 readme = "README.md"
+keywords = ["titiler", "GIS", "quantized", "mesh", "3dtiles", "Dynamic", "FastAPI"]
+repository = "https://github.com/AndrewAnnex/monticello"
+exclude = ["src/monticello/tests/fixtures/dem.tif"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Multimedia :: Graphics :: 3D Rendering",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Framework :: FastAPI"
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
