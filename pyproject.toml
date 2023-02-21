@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "monticello"
+version = "0.1.0"
+description = "Quantized Mesh encoder extension for titiler"
+authors = ["Andrew Annex <ama6fy@virginia.edu>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+"titiler.core" = "^0.11.0"
+pymartini = "^0.4.4"
+quantized-mesh-encoder = "^0.4.3"
+pydelatin = "^0.2.7"
+morecantile = "^3.2.5"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.1"
+coverage = "^7.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
