@@ -145,7 +145,7 @@ class MonticelloFactory(FactoryExtension):
                     flip_y=flip_y
                 )
             # get the ellipsoid, todo cache
-            ellipsoid = Ellipsoid(tms.ellipsoid.semi_major_metre, tms.ellipsoid.semi_minor_metre)
+            ellipsoid = Ellipsoid(tms.crs.ellipsoid.semi_major_metre, tms.crs.ellipsoid.semi_minor_metre)
             with BytesIO() as out:
                 qme_encode(
                     out,
