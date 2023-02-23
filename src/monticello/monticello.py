@@ -12,6 +12,7 @@ import rasterio
 from rio_tiler.errors import InvalidBufferSize
 from rio_tiler.io import BaseReader, Reader
 from quantized_mesh_encoder import encode as qme_encode
+from quantized_mesh_encoder import Ellipsoid
 from pymartini import Martini, rescale_positions as martini_rescale_positions
 from pydelatin import Delatin
 from pydelatin.util import rescale_positions as delatin_rescale_positions
@@ -99,7 +100,7 @@ class MonticelloFactory(FactoryExtension):
                 mesh_quantizer: Literal['martini', 'delatin'] = Query("delatin", description="Mesh encoding algorithm to use")
         ):
             tms = self.supported_tms.get(TileMatrixSetId)
-            tilesize = scale * 256
+            tile_size = scale * 256
             with rasterio.Env(**env):
                 with self.reader(src_path, tms=tms, **reader_params) as src_dst:
                     # todo raise error if buffer not gt 0 and martini tiler
@@ -108,7 +109,7 @@ class MonticelloFactory(FactoryExtension):
                            x,
                            y,
                            z,
-                           tilesize=tilesize,
+                           tilesize=tile_size,
                            buffer=buffer,
                            **layer_params,
                            **dataset_params,
@@ -125,7 +126,7 @@ class MonticelloFactory(FactoryExtension):
             # got the tile data, now do the work
             flip_y: bool = self.flip_y[0].lower() == 'true'
             tile = image.data[0]
-            tile_size: int = tile.shape[0]
+            tile_size: int = tile.shape[0] #this will be expanded by the buffer for martini
             bounds = image.bounds
             if mesh_quantizer == 'delatin':
                 res, tri = tile_to_mesh_delatin(
@@ -143,9 +144,16 @@ class MonticelloFactory(FactoryExtension):
                     max_error=self.max_error,
                     flip_y=flip_y
                 )
-
-
+            # get the ellipsoid, todo cache
+            ellipsoid = Ellipsoid(tms.ellipsoid.semi_major_metre, tms.ellipsoid.semi_minor_metre)
             with BytesIO() as out:
-                qme_encode(out, res, tri)
+                qme_encode(
+                    out,
+                    res,
+                    tri,
+                    bounds=bounds,
+                    sphere_method='naive',
+                    ellipsoid=ellipsoid
+                )
                 out.seek(0)
                 return Response(out.read(), media_type="application/vnd.quantized-mesh")
