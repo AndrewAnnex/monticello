@@ -16,7 +16,7 @@ from quantized_mesh_encoder import Ellipsoid
 from pymartini import Martini, rescale_positions as martini_rescale_positions
 from pydelatin import Delatin
 from pydelatin.util import rescale_positions as delatin_rescale_positions
-
+from numpy import float32
 
 from fastapi import Depends, Query, Path, HTTPException
 from titiler.core.factory import BaseTilerFactory, FactoryExtension
@@ -29,7 +29,7 @@ from .responses import QMEResponse, qme_responses
 
 def tile_to_mesh_martini(tile, bounds, tile_size: int = 512, max_error: float = 10.0, flip_y: bool = False):
     martini = Martini(tile_size) 
-    tin = martini.create_tile(tile)
+    tin = martini.create_tile(tile.astype(float32))
     vrt, tri = tin.get_mesh(max_error=max_error)
     res = martini_rescale_positions(vrt, tile, bounds=bounds, flip_y=flip_y)
     return res, tri
